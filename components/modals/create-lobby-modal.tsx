@@ -47,7 +47,7 @@ export function CreateLobbyModal() {
         <DialogHeader>
           <DialogTitle>Create Lobby</DialogTitle>
           <DialogDescription>
-            Setup and new lobby and get the invite code to share with your
+            Start and new lobby and get the invite code to share with your
             friends.
           </DialogDescription>
         </DialogHeader>
