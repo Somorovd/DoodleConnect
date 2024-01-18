@@ -1,8 +1,6 @@
 import connectMongoDB from "@/lib/mongodb";
 import LobbyModel from "@/models/lobby";
 import { currentUser } from "@clerk/nextjs";
-import { NextApiRequest } from "next";
-import { NextRequest } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
 export async function POST(req: Request) {

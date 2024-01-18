@@ -29,7 +29,9 @@ export function JoinLobbyModal() {
 
   const handleSubmit = async () => {
     setIsWaiting(true);
-    const res = await fetch(`/api/lobbies/${inviteCode}`);
+    const res = await fetch(`/api/lobbies/${inviteCode}/join`, {
+      method: "put",
+    });
     const lobby: Lobby = await res.json();
 
     if (res.ok) {

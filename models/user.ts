@@ -7,6 +7,7 @@ export type LobbyUser = {
 };
 
 export const userSchema = new Schema<LobbyUser>({
+  id: { type: String, required: true },
   username: { type: String, required: true },
   isHost: { type: Boolean, required: true, default: false },
 });

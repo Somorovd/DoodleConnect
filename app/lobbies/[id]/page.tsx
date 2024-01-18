@@ -1,9 +1,10 @@
 "use client";
 
-import { useLobby } from "@/hooks/use-lobby";
-import { Check, Copy } from "lucide-react";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import UsersList from "@/components/lobby/users-list";
+import { Check, Copy } from "lucide-react";
+import { useLobby } from "@/hooks/use-lobby";
+import { useRouter } from "next/navigation";
 
 const LobbyPage = ({ params }: { params: { id: string } }) => {
   const { lobby, fetchLobby, loading, resetLoading } = useLobby();
@@ -47,6 +48,7 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
           )}
         </span>
       </div>
+      <UsersList />
     </>
   );
 };
