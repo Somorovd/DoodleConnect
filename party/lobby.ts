@@ -25,6 +25,12 @@ export default class LobbyServer implements Party.Server {
 
   constructor(readonly room: Party.Room) {}
 
+  async onStart() {
+    if (this.room.id) {
+      await this.room.storage.put<string>("id", this.room.id);
+    }
+  }
+
   onConnect(conn: Party.Connection) {}
 
   onMessage(message: string, sender: Party.Connection) {
@@ -49,7 +55,7 @@ export default class LobbyServer implements Party.Server {
     if (!this.connectionUsers[conn.id]) return;
     console.log(`LEAVE: user ${conn.id} left ${this.room.id}`);
     await fetch(
-      `${this.room.env.NEXT_PUBLIC_URL}/api/lobbies/${this.room.id}/remove`,
+      `${this.room.env.NEXT_PUBLIC_URL}/api/lobbies/${this.room.id}/leave`,
       {
         method: "put",
         headers: { "content-type": "application/json" },
@@ -57,5 +63,16 @@ export default class LobbyServer implements Party.Server {
       }
     );
     delete this.connectionUsers[conn.id];
+    // 2 minute timer
+    this.room.storage.setAlarm(Date.now() + 2 * 60 * 1000);
+  }
+
+  async onAlarm() {
+    if (Object.keys(this.connectionUsers).length !== 0) return;
+
+    const id = await this.room.storage.get<string>("id");
+    await fetch(`${this.room.env.NEXT_PUBLIC_URL}/api/lobbies/${id}`, {
+      method: "delete",
+    });
   }
 }

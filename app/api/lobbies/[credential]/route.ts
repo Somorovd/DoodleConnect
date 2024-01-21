@@ -34,3 +34,26 @@ export async function GET(
     return Response.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { credential: string } }
+) {
+  const { credential } = params;
+
+  try {
+    await connectMongoDB();
+    let lobby: Lobby | null = null;
+
+    lobby = await LobbyModel.findById(credential);
+
+    if (!lobby) {
+      return Response.json({ message: "Lobby not found" }, { status: 404 });
+    }
+
+    await LobbyModel.findByIdAndDelete(credential);
+    return Response.json({ message: "Successfully deleted" }, { status: 200 });
+  } catch (e) {
+    return Response.json({ message: "Internal Server Error" }, { status: 500 });
+  }
+}
