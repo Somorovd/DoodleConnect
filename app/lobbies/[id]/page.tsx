@@ -5,11 +5,13 @@ import UsersList from "@/components/lobby/users-list";
 import { Check, Copy } from "lucide-react";
 import { useLobby } from "@/hooks/use-lobby";
 import { useRouter } from "next/navigation";
+import { useLobbySocket } from "@/hooks/use-lobby-socket";
 
 const LobbyPage = ({ params }: { params: { id: string } }) => {
   const { lobby, fetchLobby, loading, resetLoading } = useLobby();
   const [icon, setIcon] = useState<"copy" | "check">("copy");
   const router = useRouter();
+  const socket = useLobbySocket();
 
   useEffect(() => {
     resetLoading();
