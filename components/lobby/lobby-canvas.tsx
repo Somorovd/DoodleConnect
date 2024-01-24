@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-
-type Position = { x: number; y: number };
+import CanvasToolbar from "./canvas-toolbar";
+import { useCanvas } from "@/hooks/use-canvas";
 
 const LobbyCanvas = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const color = useCanvas((state) => state.color);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   let isDrawing = false;
-  let ppos: Position = { x: 0, y: 0 };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -15,17 +15,24 @@ const LobbyCanvas = () => {
 
     if (context) {
       context.lineCap = "round";
-      context.strokeStyle = "black";
+      context.strokeStyle = color;
       context.lineWidth = 3;
       setContext(context);
     }
   }, []);
+
+  useEffect(() => {
+    if (context) {
+      context.strokeStyle = color;
+    }
+  }, [color]);
 
   const startDrawing = ({
     nativeEvent,
   }: React.MouseEvent<HTMLCanvasElement>) => {
     if (!context) return;
     const { offsetX: x, offsetY: y } = nativeEvent;
+    context.beginPath();
     context.moveTo(x, y);
     isDrawing = true;
   };
@@ -48,18 +55,30 @@ const LobbyCanvas = () => {
     context.moveTo(x, y);
   };
 
+  const setColor = (c: string) => {
+    if (!context) return;
+    context.strokeStyle = c;
+  };
+
   return (
-    <canvas
-      ref={canvasRef}
-      onMouseDown={startDrawing}
-      onMouseMove={draw}
-      onMouseUp={endDrawing}
-      onMouseEnter={movePos}
-      onMouseOut={draw}
-      className="border-2 border-black"
-      width={600}
-      height={600}
-    />
+    <>
+      <div className="relative">
+        <canvas
+          ref={canvasRef}
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={endDrawing}
+          onMouseEnter={movePos}
+          onMouseOut={draw}
+          className="border-2 border-black"
+          width={600}
+          height={600}
+        />
+        <div className="absolute top-[5px] right-[5px]">
+          <CanvasToolbar />
+        </div>
+      </div>
+    </>
   );
 };
 
