@@ -3,9 +3,10 @@ import CanvasToolbar from "./canvas-toolbar";
 import { useCanvas } from "@/hooks/use-canvas";
 
 const LobbyCanvas = () => {
-  const color = useCanvas((state) => state.color);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const color = useCanvas((state) => state.color);
+  const size = useCanvas((state) => state.size);
 
   let isDrawing = false;
 
@@ -16,7 +17,7 @@ const LobbyCanvas = () => {
     if (context) {
       context.lineCap = "round";
       context.strokeStyle = color;
-      context.lineWidth = 3;
+      context.lineWidth = size;
       setContext(context);
     }
   }, []);
@@ -24,8 +25,9 @@ const LobbyCanvas = () => {
   useEffect(() => {
     if (context) {
       context.strokeStyle = color;
+      context.lineWidth = size;
     }
-  }, [color]);
+  }, [context, color, size]);
 
   const startDrawing = ({
     nativeEvent,
