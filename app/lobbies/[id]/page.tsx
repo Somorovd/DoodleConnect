@@ -6,6 +6,7 @@ import { Check, Copy } from "lucide-react";
 import { useLobby } from "@/hooks/use-lobby";
 import { useRouter } from "next/navigation";
 import { useLobbySocket } from "@/hooks/use-lobby-socket";
+import LobbyCanvas from "@/components/lobby/lobby-canvas";
 
 const LobbyPage = ({ params }: { params: { id: string } }) => {
   const { lobby, fetchLobby, loading, resetLoading } = useLobby();
@@ -34,9 +35,9 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
 
   return (
     <>
-      <div>LobbyPage - {params.id}</div>
+      <p>LobbyPage - {params.id}</p>
       <div className="flex gap-4">
-        Code - {lobby?.inviteCode || "loading..."}
+        <p>Code - {lobby?.inviteCode || "loading..."}</p>
         <span onClick={toggleCopy} className="hover:cursor-pointer">
           {icon === "copy" ? (
             <Copy
@@ -51,6 +52,9 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
         </span>
       </div>
       <UsersList />
+      <div className="flex justify-center">
+        <LobbyCanvas />
+      </div>
     </>
   );
 };
