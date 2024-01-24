@@ -5,8 +5,10 @@ import { LobbyEvent, LobbyEventMessage } from "@/party/lobby";
 import { useUser } from "@clerk/nextjs";
 
 export const useLobbySocket = () => {
-  const lobbyId = useLobby((state) => state.lobby?._id);
   const { user: self } = useUser();
+  const lobbyId = useLobby((state) => state.lobby?._id);
+  const addUser = useLobby((state) => state.addUser);
+  const removeUser = useLobby((state) => state.removeUser);
   const socket = usePartySocket({
     host: process.env.NEXT_PUBLIC_PARTYKIT_HOST!,
     party: "lobby",
@@ -15,10 +17,6 @@ export const useLobbySocket = () => {
 
   useEffect(() => {
     if (!socket || !lobbyId || !self) return;
-
-    const onMessage = (event: WebSocketEventMap["message"]) => {};
-
-    socket.addEventListener("message", onMessage);
 
     const joinMessage: LobbyEventMessage<LobbyEvent.UserJoined> = {
       event: LobbyEvent.UserJoined,
@@ -32,6 +30,27 @@ export const useLobbySocket = () => {
     };
     socket.send(JSON.stringify(joinMessage));
 
+    const onMessage = (event: WebSocketEventMap["message"]) => {
+      const msg = JSON.parse(event.data);
+
+      switch (msg.event) {
+        case LobbyEvent.UserJoined:
+          {
+            const user = (msg as LobbyEventMessage<LobbyEvent.UserJoined>).data
+              .user;
+            addUser(user);
+          }
+          break;
+        case LobbyEvent.UserLeft:
+          {
+            const id = (msg as LobbyEventMessage<LobbyEvent.UserLeft>).data.id;
+            removeUser(id);
+          }
+          break;
+      }
+    };
+
+    socket.addEventListener("message", onMessage);
     return () => socket.removeEventListener("message", onMessage);
   }, [socket, lobbyId, self]);
 

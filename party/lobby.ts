@@ -13,7 +13,7 @@ export type LobbyMessageData = {
     user: LobbyUser;
   };
   [LobbyEvent.UserLeft]: {
-    user: LobbyUser;
+    id: string;
   };
   [LobbyEvent.DrawLine]: {
     color: string;
@@ -79,6 +79,13 @@ export default class LobbyServer implements Party.Server {
         body: JSON.stringify({ user: this.connectionUsers[conn.id] }),
       }
     );
+    const msg: LobbyEventMessage<LobbyEvent.UserLeft> = {
+      event: LobbyEvent.UserLeft,
+      data: {
+        id: this.connectionUsers[conn.id].id,
+      },
+    };
+    this.room.broadcast(JSON.stringify(msg));
     delete this.connectionUsers[conn.id];
     // 2 minute timer
     this.room.storage.setAlarm(Date.now() + 2 * 60 * 1000);

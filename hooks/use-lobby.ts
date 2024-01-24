@@ -10,9 +10,11 @@ type LobbyStore = {
   users: UserMap;
   fetchLobby: (id: string) => Promise<void>;
   resetLoading: () => void;
+  addUser: (user: LobbyUser) => void;
+  removeUser: (id: string) => void;
 };
 
-export const useLobby = create<LobbyStore>((set) => ({
+export const useLobby = create<LobbyStore>((set, get) => ({
   lobby: null,
   loading: "idle",
   users: {},
@@ -27,4 +29,10 @@ export const useLobby = create<LobbyStore>((set) => ({
     set({ lobby, users, loading: "complete" });
   },
   resetLoading: () => set({ loading: "idle" }),
+  addUser: (user) => set({ users: { ...get().users, [user.id]: user } }),
+  removeUser: (id) => {
+    const users = get().users;
+    delete users[id];
+    set({ users });
+  },
 }));
