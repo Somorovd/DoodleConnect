@@ -26,8 +26,12 @@ const CanvasToolbar = () => {
   const canvas = useCanvas();
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
+    <Popover
+      onOpenChange={(open: boolean) =>
+        setTimeout(() => canvas.setMenuOpen(open))
+      }
+    >
+      <PopoverTrigger asChild onClick={() => canvas.setMenuOpen(true)}>
         <button>⚙</button>
       </PopoverTrigger>
       <PopoverContent

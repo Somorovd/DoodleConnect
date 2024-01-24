@@ -5,8 +5,7 @@ import { useCanvas } from "@/hooks/use-canvas";
 const LobbyCanvas = () => {
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const color = useCanvas((state) => state.color);
-  const size = useCanvas((state) => state.size);
+  const { color, size, menuOpen } = useCanvas();
 
   let isDrawing = false;
 
@@ -16,8 +15,6 @@ const LobbyCanvas = () => {
 
     if (context) {
       context.lineCap = "round";
-      context.strokeStyle = color;
-      context.lineWidth = size;
       setContext(context);
     }
   }, []);
@@ -25,6 +22,7 @@ const LobbyCanvas = () => {
   useEffect(() => {
     if (context) {
       context.strokeStyle = color;
+      context.fillStyle = color;
       context.lineWidth = size;
     }
   }, [context, color, size]);
@@ -32,10 +30,12 @@ const LobbyCanvas = () => {
   const startDrawing = ({
     nativeEvent,
   }: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!context) return;
+    if (!context || menuOpen) return;
     const { offsetX: x, offsetY: y } = nativeEvent;
     context.beginPath();
     context.moveTo(x, y);
+    context.ellipse(x, y, 0, 0, 0, 0, 2 * Math.PI);
+    context.stroke();
     isDrawing = true;
   };
 
@@ -72,7 +72,7 @@ const LobbyCanvas = () => {
           onMouseUp={endDrawing}
           onMouseEnter={movePos}
           onMouseOut={draw}
-          className="border-2 border-black"
+          className="border-2 border-black cursor-crosshair"
           width={600}
           height={600}
         />
