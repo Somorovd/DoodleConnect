@@ -22,6 +22,7 @@ export type LobbyEventMessage<E extends LobbyEvent> = {
 
 export default class LobbyServer implements Party.Server {
   private connectionUsers: { [key: string]: { id: string } } = {};
+  private userIds = new Set<string>();
 
   constructor(readonly room: Party.Room) {}
 
@@ -37,8 +38,10 @@ export default class LobbyServer implements Party.Server {
     const msg: LobbyEventMessage<any> = JSON.parse(message);
     switch (msg.event) {
       case LobbyEvent.UserJoined:
+        const data: LobbyMessageData[LobbyEvent.UserJoined] = msg.data;
         this.connectionUsers[sender.id] = msg.data.user;
-        console.log(`JOIN: user ${sender.id} joined ${this.room.id}`);
+        this.userIds.add(data.user.id);
+        console.log(`JOIN: user ${data.user.id} joined ${this.room.id}`);
         break;
       case LobbyEvent.UserLeft:
         this.onUserLeft(sender);
@@ -48,7 +51,13 @@ export default class LobbyServer implements Party.Server {
   }
 
   async onClose(conn: Party.Connection) {
-    await this.onUserLeft(conn);
+    const userId = this.connectionUsers[conn.id].id;
+    this.userIds.delete(userId);
+    setTimeout(async () => {
+      if (!this.userIds.has(userId)) {
+        await this.onUserLeft(conn);
+      }
+    }, 30 * 1000);
   }
 
   async onUserLeft(conn: Party.Connection) {
