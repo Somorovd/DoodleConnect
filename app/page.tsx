@@ -6,7 +6,7 @@ import { UserButton, useUser } from "@clerk/nextjs";
 
 export default function Home() {
   const onOpen = useModal((state) => state.onOpen);
-  const { user: self } = useUser();
+  const { isLoaded, user: self } = useUser();
 
   const handleCreate = () => {
     onOpen(ModalType.CreateLobby);
@@ -15,6 +15,10 @@ export default function Home() {
   const handleJoin = () => {
     onOpen(ModalType.JoinLobby);
   };
+
+  if (!isLoaded) {
+    return null;
+  }
 
   return (
     <>
