@@ -1,17 +1,25 @@
 import { LobbyUser } from "@/models/user";
 import type * as Party from "partykit/server";
+import type { Position } from "@/types";
 
 export enum LobbyEvent {
   UserJoined = "user-joined",
   UserLeft = "user-left",
+  DrawLine = "draw-line",
 }
 
-type LobbyMessageData = {
+export type LobbyMessageData = {
   [LobbyEvent.UserJoined]: {
     user: LobbyUser;
   };
   [LobbyEvent.UserLeft]: {
     user: LobbyUser;
+  };
+  [LobbyEvent.DrawLine]: {
+    color: string;
+    size: number;
+    from: Position;
+    to: Position;
   };
 };
 

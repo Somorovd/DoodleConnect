@@ -1,13 +1,60 @@
 import React, { useEffect, useRef, useState } from "react";
 import CanvasToolbar from "./canvas-toolbar";
 import { useCanvas } from "@/hooks/use-canvas";
+import { useLobbySocket } from "@/hooks/use-lobby-socket";
+import { LobbyEvent, LobbyEventMessage } from "@/party/lobby";
+import { Position } from "@/types";
 
 const LobbyCanvas = () => {
+  const { color, size, menuOpen } = useCanvas();
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { color, size, menuOpen } = useCanvas();
+  const socket = useLobbySocket();
 
   let isDrawing = false;
+  let ppos: Position = { x: 0, y: 0 };
+
+  const sendDrawEvent = (from: Position, to: Position) => {
+    const msg: LobbyEventMessage<LobbyEvent.DrawLine> = {
+      event: LobbyEvent.DrawLine,
+      data: {
+        color,
+        size,
+        from,
+        to,
+      },
+    };
+    socket.send(JSON.stringify(msg));
+  };
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const onMessage = (event: WebSocketEventMap["message"]) => {
+      const msg: LobbyEventMessage<LobbyEvent.DrawLine> = JSON.parse(
+        event.data
+      );
+      if (msg.event !== LobbyEvent.DrawLine || !context) return;
+
+      // TODO: test how this works while in the middle of drawing
+      // dont want message to interupt the current line
+
+      context.strokeStyle = msg.data.color;
+      context.lineWidth = msg.data.size;
+      context.beginPath();
+      context.moveTo(msg.data.from.x, msg.data.from.y);
+      context.lineTo(msg.data.to.x, msg.data.to.y);
+      context.stroke();
+
+      context.strokeStyle = color;
+      context.lineWidth = size;
+      context.beginPath();
+      context.moveTo(ppos.x, ppos.y);
+    };
+
+    socket.addEventListener("message", onMessage);
+    return () => socket.removeEventListener("message", onMessage);
+  }, [socket]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -33,10 +80,12 @@ const LobbyCanvas = () => {
     if (!context || menuOpen) return;
     const { offsetX: x, offsetY: y } = nativeEvent;
     context.beginPath();
-    context.moveTo(x, y);
     context.ellipse(x, y, 0, 0, 0, 0, 2 * Math.PI);
     context.stroke();
     isDrawing = true;
+    ppos = { x, y };
+    context.moveTo(x, y);
+    sendDrawEvent({ x, y }, { x, y });
   };
 
   const endDrawing = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
@@ -47,6 +96,7 @@ const LobbyCanvas = () => {
     if (!context) return;
     const { offsetX: x, offsetY: y } = nativeEvent;
     context.moveTo(x, y);
+    ppos = { x, y };
   };
 
   const draw = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
@@ -54,12 +104,9 @@ const LobbyCanvas = () => {
     const { offsetX: x, offsetY: y } = nativeEvent;
     context.lineTo(x, y);
     context.stroke();
+    sendDrawEvent(ppos, { x, y });
     context.moveTo(x, y);
-  };
-
-  const setColor = (c: string) => {
-    if (!context) return;
-    context.strokeStyle = c;
+    ppos = { x, y };
   };
 
   return (
