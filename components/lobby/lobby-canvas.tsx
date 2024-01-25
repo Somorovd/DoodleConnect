@@ -8,10 +8,10 @@ import { Position } from "@/types";
 const LobbyCanvas = () => {
   const { color, size, menuOpen } = useCanvas();
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const socket = useLobbySocket();
 
-  let isDrawing = false;
   let ppos: Position = { x: 0, y: 0 };
 
   const sendDrawEvent = (from: Position, to: Position) => {
@@ -25,6 +25,40 @@ const LobbyCanvas = () => {
       },
     };
     socket.send(JSON.stringify(msg));
+  };
+
+  const startDrawing = ({
+    nativeEvent,
+  }: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!context || menuOpen) return;
+    const { offsetX: x, offsetY: y } = nativeEvent;
+    context.beginPath();
+    context.ellipse(x, y, 0, 0, 0, 0, 2 * Math.PI);
+    context.stroke();
+    setIsDrawing(true);
+    ppos = { x, y };
+    context.moveTo(x, y);
+    sendDrawEvent({ x, y }, { x, y });
+  };
+
+  const endDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const movePos = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!context) return;
+    const { offsetX: x, offsetY: y } = nativeEvent;
+    ppos = { x, y };
+  };
+
+  const draw = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!context || !isDrawing) return;
+    const { offsetX: x, offsetY: y } = nativeEvent;
+    context.lineTo(x, y);
+    context.stroke();
+    sendDrawEvent(ppos, { x, y });
+    context.moveTo(x, y);
+    ppos = { x, y };
   };
 
   useEffect(() => {
@@ -64,6 +98,20 @@ const LobbyCanvas = () => {
       context.lineCap = "round";
       setContext(context);
     }
+
+    const handleMouse = (event: MouseEvent) => {
+      if (!canvas?.contains(event.target as Node)) {
+        endDrawing();
+      }
+    };
+
+    document.addEventListener("mousedown", handleMouse);
+    document.addEventListener("mouseup", handleMouse);
+
+    return () => {
+      document.removeEventListener("mousedown", handleMouse);
+      document.removeEventListener("mouseup", handleMouse);
+    };
   }, []);
 
   useEffect(() => {
@@ -73,41 +121,6 @@ const LobbyCanvas = () => {
       context.lineWidth = size;
     }
   }, [context, color, size]);
-
-  const startDrawing = ({
-    nativeEvent,
-  }: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!context || menuOpen) return;
-    const { offsetX: x, offsetY: y } = nativeEvent;
-    context.beginPath();
-    context.ellipse(x, y, 0, 0, 0, 0, 2 * Math.PI);
-    context.stroke();
-    isDrawing = true;
-    ppos = { x, y };
-    context.moveTo(x, y);
-    sendDrawEvent({ x, y }, { x, y });
-  };
-
-  const endDrawing = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
-    isDrawing = false;
-  };
-
-  const movePos = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!context) return;
-    const { offsetX: x, offsetY: y } = nativeEvent;
-    context.moveTo(x, y);
-    ppos = { x, y };
-  };
-
-  const draw = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!context || !isDrawing) return;
-    const { offsetX: x, offsetY: y } = nativeEvent;
-    context.lineTo(x, y);
-    context.stroke();
-    sendDrawEvent(ppos, { x, y });
-    context.moveTo(x, y);
-    ppos = { x, y };
-  };
 
   return (
     <>

@@ -15,8 +15,5 @@ export const useCanvas = create<CanvasStore>((set) => ({
   menuOpen: false,
   setColor: (color) => set({ color }),
   setSize: (size) => set({ size }),
-  setMenuOpen: (menuOpen) => {
-    console.log("setting to ", menuOpen);
-    set({ menuOpen });
-  },
+  setMenuOpen: (menuOpen) => set({ menuOpen }),
 }));
