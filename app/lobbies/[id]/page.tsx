@@ -76,21 +76,22 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
         </span>
       </div>
       <UsersList />
-      <LiveKitRoom
-        video={true}
-        audio={true}
-        token={token}
-        serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-        data-lk-theme="default"
-        style={{ height: "100dvh" }}
-      >
-        <LobbyVideoConference />
-        <RoomAudioRenderer />
-
-        <ControlBar />
-      </LiveKitRoom>
-      <div className="flex justify-center">
-        <LobbyCanvas />
+      <div className="flex justify-center space-x-4">
+        <LiveKitRoom
+          video={true}
+          audio={true}
+          token={token}
+          serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+          data-lk-theme="default"
+          style={{ height: "100dvh" }}
+        >
+          <LobbyVideoConference />
+          <RoomAudioRenderer />
+          {/* <ControlBar /> */}
+        </LiveKitRoom>
+        <div className="">
+          <LobbyCanvas />
+        </div>
       </div>
     </>
   );

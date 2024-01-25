@@ -1,11 +1,9 @@
 "use client";
 
-import React from "react";
-
 import {
-  GridLayout,
-  ParticipantTile,
+  TrackReference,
   useTracks,
+  VideoTrack,
 } from "@livekit/components-react";
 import { Track } from "livekit-client";
 
@@ -19,12 +17,16 @@ const LobbyVideoConference = () => {
   );
 
   return (
-    <GridLayout
-      tracks={tracks}
-      style={{ height: "calc(100vh - var(--lk-control-bar-height))" }}
-    >
-      <ParticipantTile />
-    </GridLayout>
+    <div className="flex flex-col space-y-1">
+      {tracks.map((track, i) => (
+        <VideoTrack
+          key={`track-${i}`}
+          trackRef={track as TrackReference}
+          width={200}
+          className="aspect-video -scale-x-100"
+        />
+      ))}
+    </div>
   );
 };
 
