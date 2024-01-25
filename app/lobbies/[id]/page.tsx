@@ -82,12 +82,11 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
           audio={true}
           token={token}
           serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-          data-lk-theme="default"
+          data-lk-theme=""
           style={{ height: "100dvh" }}
         >
           <LobbyVideoConference />
           <RoomAudioRenderer />
-          {/* <ControlBar /> */}
         </LiveKitRoom>
         <div className="">
           <LobbyCanvas />
