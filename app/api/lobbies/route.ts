@@ -18,6 +18,7 @@ export async function POST(req: Request) {
           id: user.id,
           username: user.username,
           isHost: true,
+          imgUrl: user.imageUrl,
         },
       ],
     });

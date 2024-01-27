@@ -1,5 +1,7 @@
 "use client";
 
+import { useLobby } from "@/hooks/use-lobby";
+import { useUser } from "@clerk/nextjs";
 import {
   ControlBar,
   TrackReference,
@@ -8,8 +10,10 @@ import {
   VideoTrack,
 } from "@livekit/components-react";
 import { Track } from "livekit-client";
+import Image from "next/image";
 
 const LobbyVideoConference = () => {
+  const users = useLobby((state) => state.users);
   const tracks = useTracks(
     [
       { source: Track.Source.Camera, withPlaceholder: true },
@@ -24,10 +28,15 @@ const LobbyVideoConference = () => {
         track.publication?.track?.isMuted ? (
           <div
             key={`track-${i}`}
-            className="w-[200px] aspect-video border-4 border-black bg-slate-500 text-white text-center overflow-hidden"
+            className="w-[200px] aspect-video border-4 border-black flex justify-center items-center"
           >
-            <p>{track.participant.identity}</p>
-            <p>No Video</p>
+            <Image
+              src={users[track.participant.identity].imgUrl}
+              alt={track.participant.identity}
+              width={70}
+              height={70}
+              className="rounded-full"
+            />
           </div>
         ) : (
           <VideoTrack

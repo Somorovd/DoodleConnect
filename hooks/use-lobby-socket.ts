@@ -25,6 +25,7 @@ export const useLobbySocket = () => {
           id: self.id,
           username: self.username!,
           isHost: false,
+          imgUrl: self.imageUrl,
         },
       },
     };

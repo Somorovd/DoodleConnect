@@ -24,6 +24,7 @@ export async function PUT(
       id: user.id,
       username: user.username || "",
       isHost: false,
+      imgUrl: user.imageUrl,
     };
 
     if (mongoose.Types.ObjectId.isValid(credential)) {
