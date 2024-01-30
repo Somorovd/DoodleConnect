@@ -8,11 +8,7 @@ import { useRouter } from "next/navigation";
 import LobbyCanvas from "@/components/lobby/lobby-canvas";
 import { useUser } from "@clerk/nextjs";
 
-import {
-  LiveKitRoom,
-  RoomAudioRenderer,
-  ControlBar,
-} from "@livekit/components-react";
+import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
 import LobbyVideoConference from "@/components/lobby/lobby-video-conference";
 
 const LobbyPage = ({ params }: { params: { id: string } }) => {
@@ -59,39 +55,51 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
 
   return (
     <>
-      <p>LobbyPage - {params.id}</p>
-      <div className="flex gap-4">
-        <p>Code - {lobby?.inviteCode || "loading..."}</p>
-        <span onClick={toggleCopy} className="hover:cursor-pointer">
-          {icon === "copy" ? (
-            <Copy
-              width={16}
-              onClick={() =>
-                navigator.clipboard.writeText(lobby?.inviteCode || "")
-              }
-            />
-          ) : (
-            <Check width={16} />
-          )}
-        </span>
+      <div className="flex gap-4 justify-center py-8 text-lg">
+        {loading === "complete" ? (
+          <>
+            <p>
+              Share your invite code:
+              <span className="font-bold">
+                {lobby?.inviteCode ||
+                  "___________________________________________"}
+              </span>
+            </p>
+            <span onClick={toggleCopy} className="hover:cursor-pointer">
+              {icon === "copy" ? (
+                <Copy
+                  width={16}
+                  onClick={() =>
+                    navigator.clipboard.writeText(lobby?.inviteCode || "")
+                  }
+                />
+              ) : (
+                <Check width={16} />
+              )}
+            </span>
+          </>
+        ) : (
+          <p>
+            Finding Lobby: <span className="font-bold">{params.id}</span>
+          </p>
+        )}
       </div>
-      <UsersList />
-      <div className="flex justify-center space-x-4">
-        <LiveKitRoom
-          video={true}
-          audio={true}
-          token={token}
-          serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-          data-lk-theme=""
-          style={{ height: "100dvh" }}
-        >
-          <LobbyVideoConference />
-          <RoomAudioRenderer />
-        </LiveKitRoom>
-        <div className="">
+      {loading === "complete" ? (
+        <div className="flex justify-center space-x-4">
+          <LiveKitRoom
+            video={true}
+            audio={true}
+            token={token}
+            serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+            data-lk-theme=""
+            style={{ height: "100dvh" }}
+          >
+            <LobbyVideoConference />
+            <RoomAudioRenderer />
+          </LiveKitRoom>
           <LobbyCanvas />
         </div>
-      </div>
+      ) : null}
     </>
   );
 };

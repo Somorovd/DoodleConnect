@@ -19,10 +19,12 @@ export const useLobby = create<LobbyStore>((set, get) => ({
   loading: "idle",
   users: {},
   fetchLobby: async (id) => {
-    set({ loading: "pending" });
+    set({ loading: "pending", lobby: null });
     const res = await fetch(`/api/lobbies/${id}`);
-    if (!res.ok) return;
-
+    if (!res.ok) {
+      set({ loading: "complete" });
+      return;
+    }
     const lobby: Lobby = await res.json();
     const users: UserMap = {};
     lobby.users.forEach((user) => (users[user.id] = user));
