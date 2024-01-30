@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 export async function POST(req: Request) {
   try {
     const user = await currentUser();
+    const { maxUsers } = await req.json();
 
     if (!user) {
       return Response.json({ message: "Unauthorized" }, { status: 403 });
@@ -21,6 +22,7 @@ export async function POST(req: Request) {
           imgUrl: user.imageUrl,
         },
       ],
+      maxUsers,
     });
 
     await connectMongoDB();

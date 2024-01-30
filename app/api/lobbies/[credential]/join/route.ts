@@ -45,6 +45,13 @@ export async function PUT(
       return Response.json(lobby, { status: 200 });
     }
 
+    if (lobby.users.length === lobby.maxUsers) {
+      return Response.json(
+        { message: "This lobby cannot be joined" },
+        { status: 400 }
+      );
+    }
+
     if (mongoose.Types.ObjectId.isValid(credential)) {
       lobby = await LobbyModel.findByIdAndUpdate(credential, {
         $push: { users: newUser },
