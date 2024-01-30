@@ -24,9 +24,12 @@ export default function Home() {
 
   return (
     <>
-      <h1 className="text-[4rem] text-center">
-        A Fake Artist Goes to New York
-      </h1>
+      <header>
+        <h1 className="text-[4rem] text-center">DoodleConnect</h1>
+        <h2 className="text-[2rem] text-center">
+          Chat with friends while making silly art
+        </h2>
+      </header>
       <div className="h-screen flex justify-center m-[4rem]">
         <div className="w-[500px] h-[400px] border-[1px] space-y-4 p-4 border-black flex flex-col">
           <header className="flex text-center space-x-4">

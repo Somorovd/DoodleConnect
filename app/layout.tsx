@@ -4,7 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import ModalProvider from "@/components/providers/modal-provider";
 
 export const metadata: Metadata = {
-  title: "Fake Artist",
+  title: "DoodleConnect",
 };
 
 export default function RootLayout({
