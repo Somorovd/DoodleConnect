@@ -21,6 +21,7 @@ export function JoinLobbyModal() {
   const { isOpen, type, onClose } = useModal();
   const [isWaiting, setIsWaiting] = useState(false);
   const [inviteCode, setInviteCode] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -29,15 +30,24 @@ export function JoinLobbyModal() {
 
   const handleSubmit = async () => {
     setIsWaiting(true);
+
+    if (!inviteCode) {
+      setError("An invite code is required");
+      setIsWaiting(false);
+      return;
+    }
+
     const res = await fetch(`/api/lobbies/${inviteCode}/join`, {
       method: "put",
     });
-    const lobby: Lobby = await res.json();
 
     if (res.ok) {
       onClose();
+      const lobby: Lobby = await res.json();
       return router.push(`/lobbies/${lobby._id}`);
     } else {
+      const resBody = await res.json();
+      setError(resBody.message || "An Error Occured");
       setIsWaiting(false);
     }
   };
@@ -61,6 +71,7 @@ export function JoinLobbyModal() {
           value={inviteCode}
           onChange={(e) => setInviteCode(e.target.value)}
         ></Input>
+        <p className="text-red-700">{error}</p>
         <DialogFooter>
           <Button onClick={handleSubmit} disabled={isWaiting}>
             Go

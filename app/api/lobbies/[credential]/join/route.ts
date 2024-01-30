@@ -34,7 +34,10 @@ export async function PUT(
     }
 
     if (!lobby) {
-      return Response.json({ message: "Lobby not found" }, { status: 404 });
+      return Response.json(
+        { message: "This lobby cannot be joined" },
+        { status: 404 }
+      );
     }
 
     // user already in lobby
