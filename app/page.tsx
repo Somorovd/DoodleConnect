@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { ModalType, useModal } from "@/hooks/use-modal";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { UserButton, redirectToSignIn, useUser } from "@clerk/nextjs";
 
 export default function Home() {
-  const onOpen = useModal((state) => state.onOpen);
   const { isLoaded, user: self } = useUser();
+  const onOpen = useModal((state) => state.onOpen);
 
   const handleCreate = () => {
     onOpen(ModalType.CreateLobby);
@@ -18,6 +18,8 @@ export default function Home() {
 
   if (!isLoaded) {
     return null;
+  } else if (!self) {
+    redirectToSignIn();
   }
 
   return (
