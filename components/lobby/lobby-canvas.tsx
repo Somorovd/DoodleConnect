@@ -49,6 +49,7 @@ const LobbyCanvas = () => {
     if (!context) return;
     const { offsetX: x, offsetY: y } = nativeEvent;
     ppos = { x, y };
+    // context.moveTo(x, y);
   };
 
   const draw = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
@@ -124,12 +125,16 @@ const LobbyCanvas = () => {
 
   return (
     <>
-      <div className="relative">
+      <div className="relative h-fit w-fit">
         <canvas
           ref={canvasRef}
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={endDrawing}
+          /*
+          Problems on onMouseEnter because sometimes it will return the coordinated relative to the
+          parent container sometimes, which causes streaks on the canvas. (when context.moveTo is uncommented in movePos)
+          */
           onMouseEnter={movePos}
           onMouseOut={draw}
           className="border-2 border-black cursor-crosshair"
