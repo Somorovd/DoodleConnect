@@ -16,7 +16,7 @@ export default function RootLayout({
     <>
       <ClerkProvider>
         <html lang="en">
-          <body>
+          <body className="h-screen">
             {children}
             <ModalProvider />
           </body>
