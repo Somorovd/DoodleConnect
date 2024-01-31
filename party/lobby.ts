@@ -1,14 +1,19 @@
 import { LobbyUser } from "@/models/user";
 import type * as Party from "partykit/server";
 import type { Position } from "@/types";
+import { SyncAction } from "next/dist/server/dev/hot-reloader-types";
 
 export enum LobbyEvent {
   UserJoined = "user-joined",
   UserLeft = "user-left",
   DrawLine = "draw-line",
+  Sync = "sync",
 }
 
 export type LobbyMessageData = {
+  [LobbyEvent.Sync]: {
+    lines: LobbyMessageData[LobbyEvent.DrawLine][];
+  };
   [LobbyEvent.UserJoined]: {
     user: LobbyUser;
   };
@@ -31,6 +36,7 @@ export type LobbyEventMessage<E extends LobbyEvent> = {
 export default class LobbyServer implements Party.Server {
   private connectionUsers: { [key: string]: { id: string } } = {};
   private userIds = new Set<string>();
+  private lines: LobbyMessageData[LobbyEvent.DrawLine][] = [];
 
   constructor(readonly room: Party.Room) {}
 
@@ -40,7 +46,16 @@ export default class LobbyServer implements Party.Server {
     }
   }
 
-  onConnect(conn: Party.Connection) {}
+  onConnect(conn: Party.Connection) {
+    // send the current canvas state
+    const msg: LobbyEventMessage<LobbyEvent.Sync> = {
+      event: LobbyEvent.Sync,
+      data: {
+        lines: this.lines,
+      },
+    };
+    conn.send(JSON.stringify(msg));
+  }
 
   onMessage(message: string, sender: Party.Connection) {
     const msg: LobbyEventMessage<any> = JSON.parse(message);
@@ -54,6 +69,8 @@ export default class LobbyServer implements Party.Server {
       case LobbyEvent.UserLeft:
         this.onUserLeft(sender);
         break;
+      case LobbyEvent.DrawLine:
+        this.onDrawLine(msg.data);
     }
     this.room.broadcast(message, [sender.id]);
   }
@@ -61,6 +78,7 @@ export default class LobbyServer implements Party.Server {
   async onClose(conn: Party.Connection) {
     const userId = this.connectionUsers[conn.id].id;
     this.userIds.delete(userId);
+    // wait 30 seconds before sending user left
     setTimeout(async () => {
       if (!this.userIds.has(userId)) {
         await this.onUserLeft(conn);
@@ -89,6 +107,18 @@ export default class LobbyServer implements Party.Server {
     delete this.connectionUsers[conn.id];
     // 2 minute timer
     this.room.storage.setAlarm(Date.now() + 2 * 60 * 1000);
+  }
+
+  async onDrawLine(data: LobbyMessageData[LobbyEvent.DrawLine]) {
+    this.lines.push(data);
+    // await fetch(
+    //   `${this.room.env.NEXT_PUBLIC_URL}/api/lobbies/${this.room.id}/draw`,
+    //   {
+    //     method: "post",
+    //     headers: { "content-type": "application/json" },
+    //     body: JSON.stringify(data),
+    //   }
+    // );
   }
 
   async onAlarm() {

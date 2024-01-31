@@ -9,10 +9,9 @@ const LobbyCanvas = () => {
   const { color, size, menuOpen } = useCanvas();
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [ppos, setPpos] = useState<Position>({ x: 0, y: 0 });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const socket = useLobbySocket();
-
-  let ppos: Position = { x: 0, y: 0 };
 
   const sendDrawEvent = (from: Position, to: Position) => {
     const msg: LobbyEventMessage<LobbyEvent.DrawLine> = {
@@ -35,10 +34,10 @@ const LobbyCanvas = () => {
     context.beginPath();
     context.ellipse(x, y, 0, 0, 0, 0, 2 * Math.PI);
     context.stroke();
-    setIsDrawing(true);
-    ppos = { x, y };
+    setPpos({ x, y });
     context.moveTo(x, y);
     sendDrawEvent({ x, y }, { x, y });
+    setIsDrawing(true);
   };
 
   const endDrawing = () => {
@@ -48,7 +47,7 @@ const LobbyCanvas = () => {
   const movePos = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
     if (!context) return;
     const { offsetX: x, offsetY: y } = nativeEvent;
-    ppos = { x, y };
+    setPpos({ x, y });
     // context.moveTo(x, y);
   };
 
@@ -59,32 +58,44 @@ const LobbyCanvas = () => {
     context.stroke();
     sendDrawEvent(ppos, { x, y });
     context.moveTo(x, y);
-    ppos = { x, y };
+    setPpos({ x, y });
   };
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !context) return;
 
-    const onMessage = (event: WebSocketEventMap["message"]) => {
-      const msg: LobbyEventMessage<LobbyEvent.DrawLine> = JSON.parse(
-        event.data
-      );
-      if (msg.event !== LobbyEvent.DrawLine || !context) return;
+    const onSync = (msg: LobbyEventMessage<LobbyEvent.Sync>) => {
+      for (let line of msg.data.lines) {
+        onDrawLine({
+          data: { ...line },
+        } as LobbyEventMessage<LobbyEvent.DrawLine>);
+      }
+    };
 
-      // TODO: test how this works while in the middle of drawing
-      // dont want message to interupt the current line
-
+    const onDrawLine = (msg: LobbyEventMessage<LobbyEvent.DrawLine>) => {
+      context.beginPath();
       context.strokeStyle = msg.data.color;
       context.lineWidth = msg.data.size;
-      context.beginPath();
       context.moveTo(msg.data.from.x, msg.data.from.y);
       context.lineTo(msg.data.to.x, msg.data.to.y);
       context.stroke();
 
+      context.beginPath();
       context.strokeStyle = color;
       context.lineWidth = size;
-      context.beginPath();
       context.moveTo(ppos.x, ppos.y);
+    };
+
+    const onMessage = (event: WebSocketEventMap["message"]) => {
+      const msg: LobbyEventMessage<any> = JSON.parse(event.data);
+      switch (msg.event) {
+        case LobbyEvent.DrawLine:
+          onDrawLine(msg);
+          break;
+        case LobbyEvent.Sync:
+          onSync(msg);
+          break;
+      }
     };
 
     socket.addEventListener("message", onMessage);
