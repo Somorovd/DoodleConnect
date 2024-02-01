@@ -61,7 +61,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <ScrollArea className="h-full pr-4">
+        <ScrollArea className="h-[650px] pr-4">
           <section id="about-section" className="space-y-4">
             <p>
               Welcome to DoodleConnect! This project is a small tech demo for a
