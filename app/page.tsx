@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ModalType, useModal } from "@/hooks/use-modal";
 import { UserButton, redirectToSignIn, useUser } from "@clerk/nextjs";
 import { Accordion } from "@/components/ui/accordion";
+import { CircleUserRound, CodeSquare, Github, Linkedin } from "lucide-react";
 import Link from "next/link";
 import TechAccordionIcon from "@/components/tech-accordion-item";
 
@@ -73,19 +74,35 @@ export default function Home() {
               friends are displayed in realtime. Use the buttons to create a new
               lobby or enter the link provided to you for an existing lobby.
             </p>
-            <div>
-              <div className="flex space-x-2">
-                <p>Connect with me:</p>
-                <Link href="https://www.linkedin.com/in/daniel-somorov-05705313b/">
-                  LinkedIn
+            <div className="grid grid-cols-[auto_1fr] gap-4">
+              <p className="flex items-center">Connect with me:</p>
+              <div className="flex space-x-2 items-center">
+                <Link
+                  href="https://www.linkedin.com/in/daniel-somorov-05705313b/"
+                  className="bg-blue-600 border-2 border-blue-600 hover:border-white text-white rounded-full aspect-square w-[40px] flex justify-center items-center"
+                >
+                  <Linkedin width={20} />
                 </Link>
-                <Link href="https://github.com/Somorovd">GitHub</Link>
-                <Link href="https://somorovd.github.io/">Portfolio</Link>
+                <Link
+                  href="https://github.com/Somorovd"
+                  className="bg-black border-2 border-black hover:border-white text-white rounded-full aspect-square w-[40px] flex justify-center items-center"
+                >
+                  <Github width={20} />
+                </Link>
+                <Link
+                  href="https://somorovd.github.io/"
+                  className="bg-yellow-500 border-2 border-yellow-500 hover:border-white text-white rounded-full aspect-square w-[40px] flex justify-center items-center"
+                >
+                  <CircleUserRound width={20} />
+                </Link>
               </div>
+              <p className="flex items-center">Source Code:</p>
               <div className="flex space-x-2">
-                <p>Source Code:</p>
-                <Link href="https://github.com/Somorovd/DoodleConnect">
-                  GitHub
+                <Link
+                  href="https://github.com/Somorovd/DoodleConnect"
+                  className="bg-emerald-500 border-2 border-emerald-500 hover:border-white text-white rounded-full aspect-square w-[40px] flex justify-center items-center"
+                >
+                  <CodeSquare width={20} />
                 </Link>
               </div>
             </div>
