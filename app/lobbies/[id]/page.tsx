@@ -8,8 +8,14 @@ import { useRouter } from "next/navigation";
 import LobbyCanvas from "@/components/lobby/lobby-canvas";
 import { useUser } from "@clerk/nextjs";
 
-import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
+import {
+  LiveKitRoom,
+  RoomAudioRenderer,
+  TrackToggle,
+} from "@livekit/components-react";
 import LobbyVideoConference from "@/components/lobby/lobby-video-conference";
+import { Track } from "livekit-client";
+import { LobbyTrackToggle } from "@/components/lobby/lobby-track-toggle";
 
 const LobbyPage = ({ params }: { params: { id: string } }) => {
   const { lobby, fetchLobby, loading, resetLoading } = useLobby();
@@ -93,7 +99,14 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
           data-lk-theme=""
           style={{ height: "100dvh" }}
         >
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex space-x-9">
+              <LobbyTrackToggle
+                source={Track.Source.Microphone}
+                showIcon={true}
+              />
+              <LobbyTrackToggle source={Track.Source.Camera} showIcon={true} />
+            </div>
             <div className="grid grid-cols-[200_600_200] gap-4">
               <LobbyVideoConference />
               <RoomAudioRenderer />
