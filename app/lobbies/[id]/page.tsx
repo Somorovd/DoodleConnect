@@ -59,7 +59,7 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
         {loading === "complete" ? (
           <>
             <p>
-              Share your invite code:
+              Share your invite code:{" "}
               <span className="font-bold">
                 {lobby?.inviteCode ||
                   "___________________________________________"}
@@ -85,20 +85,24 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
         )}
       </div>
       {loading === "complete" ? (
-        <div className="flex justify-center space-x-4">
-          <LiveKitRoom
-            video={true}
-            audio={true}
-            token={token}
-            serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-            data-lk-theme=""
-            style={{ height: "100dvh" }}
-          >
-            <LobbyVideoConference />
-            <RoomAudioRenderer />
-          </LiveKitRoom>
-          <LobbyCanvas />
-        </div>
+        <LiveKitRoom
+          video={true}
+          audio={true}
+          token={token}
+          serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+          data-lk-theme=""
+          style={{ height: "100dvh" }}
+        >
+          <div className="flex justify-center">
+            <div className="grid grid-cols-[200_600_200] gap-4">
+              <LobbyVideoConference />
+              <RoomAudioRenderer />
+              <div className="col-start-2 row-start-1">
+                <LobbyCanvas />
+              </div>
+            </div>
+          </div>
+        </LiveKitRoom>
       ) : null}
     </>
   );
