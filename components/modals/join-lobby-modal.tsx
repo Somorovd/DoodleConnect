@@ -42,9 +42,9 @@ export function JoinLobbyModal() {
     });
 
     if (res.ok) {
-      onClose();
       const lobby: Lobby = await res.json();
-      return router.push(`/lobbies/${lobby._id}`);
+      router.push(`/lobbies/${lobby._id}`);
+      onClose();
     } else {
       const resBody = await res.json();
       setError(resBody.message || "An Error Occured");

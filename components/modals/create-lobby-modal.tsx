@@ -37,8 +37,8 @@ export function CreateLobbyModal() {
     const lobby: Lobby = await res.json();
 
     if (res.ok) {
+      router.push(`/lobbies/${lobby._id}`);
       onClose();
-      return router.push(`/lobbies/${lobby._id}`);
     } else {
       setIsWaiting(false);
     }
