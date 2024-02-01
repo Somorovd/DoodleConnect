@@ -64,18 +64,18 @@ export default function Home() {
         <ScrollArea className="h-[650px] pr-4">
           <section id="about-section" className="space-y-4">
             <p>
-              Welcome to DoodleConnect! This project is a small tech demo for a
-              number of technologies I was recently exploring, each of which has
-              a link and description below.
+              Welcome to DoodleConnect, a party chat app with live video and
+              audio and a shared canvas where drawings from your friends are
+              displayed in realtime. Use the buttons to create a new lobby or
+              enter the link provided to you for an existing lobby.
             </p>
             <p>
-              DoodleConnect is a party chat app with live video and audio feed.
-              Each lobby also has a shared canvas where drawings from your
-              friends are displayed in realtime. Use the buttons to create a new
-              lobby or enter the link provided to you for an existing lobby.
+              DoodleConnect is a small tech demo that combines many technologies
+              I recently learned, each of which has a description below and a
+              link to the official documentation or about page.
             </p>
-            <div className="grid grid-cols-[auto_1fr] gap-4">
-              <p className="flex items-center">Connect with me:</p>
+            <div className="flex items-center gap-4">
+              <p>Connect with me:</p>
               <div className="flex space-x-2 items-center">
                 <Link
                   href="https://www.linkedin.com/in/daniel-somorov-05705313b/"
@@ -96,7 +96,7 @@ export default function Home() {
                   <CircleUserRound width={20} />
                 </Link>
               </div>
-              <p className="flex items-center">Source Code:</p>
+              <p>Source Code:</p>
               <div className="flex space-x-2">
                 <Link
                   href="https://github.com/Somorovd/DoodleConnect"
