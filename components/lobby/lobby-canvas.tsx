@@ -29,8 +29,8 @@ const LobbyCanvas = () => {
   const startDrawing = ({
     nativeEvent,
   }: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!context || menuOpen) return;
-    const { offsetX: x, offsetY: y } = nativeEvent;
+    const { offsetX: x, offsetY: y, button } = nativeEvent;
+    if (!context || menuOpen || button !== 0) return;
     context.beginPath();
     context.ellipse(x, y, 0, 0, 0, 0, 2 * Math.PI);
     context.stroke();
