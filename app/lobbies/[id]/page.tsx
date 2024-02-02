@@ -1,18 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import UsersList from "@/components/lobby/users-list";
 import { Check, Copy } from "lucide-react";
 import { useLobby } from "@/hooks/use-lobby";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import LobbyCanvas from "@/components/lobby/lobby-canvas";
 import { useUser } from "@clerk/nextjs";
 
-import {
-  LiveKitRoom,
-  RoomAudioRenderer,
-  TrackToggle,
-} from "@livekit/components-react";
+import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
 import LobbyVideoConference from "@/components/lobby/lobby-video-conference";
 import { Track } from "livekit-client";
 import { LobbyTrackToggle } from "@/components/lobby/lobby-track-toggle";
@@ -21,7 +16,6 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
   const { lobby, fetchLobby, loading, resetLoading } = useLobby();
   const [icon, setIcon] = useState<"copy" | "check">("copy");
   const [token, setToken] = useState("");
-  const router = useRouter();
   const { user: self } = useUser();
 
   useEffect(() => {
@@ -62,10 +56,6 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
     setIcon("check");
     setTimeout(() => setIcon("copy"), 1500);
   };
-
-  if (loading === "complete" && !lobby) {
-    return router.push("/");
-  }
 
   return (
     <>
