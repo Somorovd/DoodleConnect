@@ -26,6 +26,8 @@ export function JoinLobbyModal() {
 
   useEffect(() => {
     setIsWaiting(false);
+    setInviteCode("");
+    setError("");
   }, [isOpen]);
 
   const handleSubmit = async () => {

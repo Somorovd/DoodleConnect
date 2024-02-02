@@ -32,8 +32,11 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
     if (loading === "idle") {
       fetchLobby(params.id);
     }
+
+    if (!self) return;
+
     if (loading === "complete") {
-      if (!lobby?.users.find((user) => user.id === self?.id)) {
+      if (!lobby?.users.find((user) => user.id === self.id)) {
         return redirect("/");
       }
     }
