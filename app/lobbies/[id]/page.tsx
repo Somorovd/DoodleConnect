@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import UsersList from "@/components/lobby/users-list";
 import { Check, Copy } from "lucide-react";
 import { useLobby } from "@/hooks/use-lobby";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import LobbyCanvas from "@/components/lobby/lobby-canvas";
 import { useUser } from "@clerk/nextjs";
 
@@ -32,7 +32,12 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
     if (loading === "idle") {
       fetchLobby(params.id);
     }
-  }, [loading]);
+    if (loading === "complete") {
+      if (!lobby?.users.find((user) => user.id === self?.id)) {
+        return redirect("/");
+      }
+    }
+  }, [loading, lobby, self]);
 
   useEffect(() => {
     // livekit
