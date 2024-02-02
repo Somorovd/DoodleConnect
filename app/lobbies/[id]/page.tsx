@@ -107,10 +107,10 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
               />
               <LobbyTrackToggle source={Track.Source.Camera} showIcon={true} />
             </div>
-            <div className="grid grid-cols-[200_600_200] gap-4">
+            <div className="grid grid-cols-[200_600_200] grid-rows-4 gap-4">
               <LobbyVideoConference />
               <RoomAudioRenderer />
-              <div className="col-start-2 row-start-1">
+              <div className="col-start-2 row-start-1 row-end-[-1]">
                 <LobbyCanvas />
               </div>
             </div>

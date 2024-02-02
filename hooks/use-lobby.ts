@@ -8,6 +8,7 @@ type LobbyStore = {
   lobby: Lobby | null;
   loading: "idle" | "pending" | "complete";
   users: UserMap;
+  isHost: boolean;
   fetchLobby: (id: string) => Promise<void>;
   resetLoading: () => void;
   addUser: (user: LobbyUser) => void;
@@ -18,6 +19,7 @@ export const useLobby = create<LobbyStore>((set, get) => ({
   lobby: null,
   loading: "idle",
   users: {},
+  isHost: false,
   fetchLobby: async (id) => {
     set({ loading: "pending", lobby: null });
     const res = await fetch(`/api/lobbies/${id}`);
