@@ -91,12 +91,13 @@ const LobbyVideoConference = () => {
     alert("Feature Coming Soon");
   };
 
-  console.log(userTracks);
+  // console.log(userTracks);
 
   return (
     <>
-      {Object.values(userTracks).map(
-        ({ user: trackUser, camera, microphone }, i) => {
+      {Object.values(userTracks)
+        .sort()
+        .map(({ user: trackUser, camera, microphone }, i) => {
           if (!trackUser) {
             return null;
           }
@@ -152,8 +153,7 @@ const LobbyVideoConference = () => {
               </ContextMenuContent>
             </ContextMenu>
           );
-        }
-      )}
+        })}
     </>
   );
 };
