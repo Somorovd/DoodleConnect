@@ -78,7 +78,7 @@ export default class LobbyServer implements Party.Server {
   async onClose(conn: Party.Connection) {
     const userId = this.connectionUsers[conn.id].id;
     this.userIds.delete(userId);
-    // wait 30 seconds before sending user left
+    // wait 15 seconds before sending user left
     setTimeout(async () => {
       if (!this.userIds.has(userId)) {
         await this.onUserLeft(conn);
