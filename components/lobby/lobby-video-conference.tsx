@@ -56,15 +56,19 @@ const LobbyVideoConference = () => {
   useEffect(() => {
     const userTracksMap: UserTracksMap = {};
 
+    Object.keys(users).forEach((id) => {
+      userTracksMap[id] = {
+        user: users[id],
+        camera: null,
+        microphone: null,
+      };
+    });
+
     tracks.forEach((track) => {
       const user = track.participant.identity;
-
       if (!userTracksMap[user]) {
-        userTracksMap[user] = {
-          user: users[user],
-          camera: null,
-          microphone: null,
-        };
+        console.warn(`User track present for missing user: ${user}`);
+        return;
       }
 
       if (track.source === Track.Source.Camera) {
@@ -75,7 +79,7 @@ const LobbyVideoConference = () => {
     });
 
     setUserTracks(userTracksMap);
-  }, [tracks.length]);
+  }, [users, tracks.length]);
 
   const kickUser = (user: LobbyUser) => {
     alert("Feature Coming Soon");
@@ -86,6 +90,8 @@ const LobbyVideoConference = () => {
   const leaveLobby = () => {
     alert("Feature Coming Soon");
   };
+
+  console.log(userTracks);
 
   return (
     <>
@@ -99,7 +105,13 @@ const LobbyVideoConference = () => {
               <ContextMenuTrigger>
                 <div className={i % 2 == 0 ? "col-start-1" : "col-start-3"}>
                   <div className="relative">
-                    {camera?.publication?.track?.isMuted ? (
+                    {camera?.participant.isCameraEnabled ? (
+                      <VideoTrack
+                        trackRef={camera as TrackReference}
+                        width={200}
+                        className="aspect-video -scale-x-100"
+                      />
+                    ) : (
                       <div className="w-[200px] aspect-video border-2 border-black flex justify-center items-center">
                         <Image
                           src={trackUser.imgUrl}
@@ -109,12 +121,6 @@ const LobbyVideoConference = () => {
                           className="rounded-full"
                         />
                       </div>
-                    ) : (
-                      <VideoTrack
-                        trackRef={camera as TrackReference}
-                        width={200}
-                        className="aspect-video -scale-x-100"
-                      />
                     )}
                     {microphone?.publication?.track?.isMuted ? (
                       <div className="absolute bottom-2 right-2 bg-red-400 w-[30px] aspect-square flex justify-center items-center rounded-full">

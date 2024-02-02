@@ -83,7 +83,7 @@ export default class LobbyServer implements Party.Server {
       if (!this.userIds.has(userId)) {
         await this.onUserLeft(conn);
       }
-    }, 30 * 1000);
+    }, 15 * 1000);
   }
 
   async onUserLeft(conn: Party.Connection) {

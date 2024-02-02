@@ -37,6 +37,6 @@ export const useLobby = create<LobbyStore>((set, get) => ({
   removeUser: (id) => {
     const users = get().users;
     delete users[id];
-    set({ users });
+    set({ users: { ...users } });
   },
 }));
