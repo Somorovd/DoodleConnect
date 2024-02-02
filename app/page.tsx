@@ -8,6 +8,7 @@ import { Accordion } from "@/components/ui/accordion";
 import { CircleUserRound, CodeSquare, Github, Linkedin } from "lucide-react";
 import Link from "next/link";
 import TechAccordionIcon from "@/components/tech-accordion-item";
+import { redirect } from "next/navigation";
 
 export default function Home() {
   const { isLoaded, user: self } = useUser();
@@ -23,8 +24,6 @@ export default function Home() {
 
   if (!isLoaded) {
     return null;
-  } else if (!self) {
-    redirectToSignIn();
   }
 
   return (
