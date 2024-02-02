@@ -127,6 +127,11 @@ const LobbyVideoConference = () => {
                         <MicOff width={15} />
                       </div>
                     ) : null}
+                    <div className="absolute top-0 w-full min-h-full opacity-0 hover:opacity-100 flex flex-col justify-end overflow-hidden">
+                      <div className="bg-white border-2 border-black text-sm px-[5px]">
+                        {trackUser.username}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </ContextMenuTrigger>
