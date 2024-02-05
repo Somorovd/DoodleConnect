@@ -73,6 +73,7 @@ const LobbyCanvas = () => {
     };
 
     const onDrawLine = (msg: LobbyEventMessage<LobbyEvent.DrawLine>) => {
+      console.log("Here -- drawing line. Context: ", context, "Message: ", msg);
       context.beginPath();
       context.strokeStyle = msg.data.color;
       context.lineWidth = msg.data.size;
