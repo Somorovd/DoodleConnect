@@ -89,6 +89,7 @@ const LobbyCanvas = () => {
 
     const onMessage = (event: WebSocketEventMap["message"]) => {
       const msg: LobbyEventMessage<any> = JSON.parse(event.data);
+      console.log(`Canvas Recieved ${msg.event}`);
       switch (msg.event) {
         case LobbyEvent.DrawLine:
           onDrawLine(msg);
