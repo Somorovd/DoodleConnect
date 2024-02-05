@@ -130,7 +130,7 @@ const LobbyCanvas = () => {
       document.removeEventListener("mousedown", handleMouse);
       document.removeEventListener("mouseup", handleMouse);
     };
-  }, [canvasRef]);
+  }, [canvasRef, canvasRef.current]);
 
   useEffect(() => {
     if (context) {
