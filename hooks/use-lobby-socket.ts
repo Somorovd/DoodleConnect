@@ -33,8 +33,6 @@ export const useLobbySocket = () => {
 
     const onMessage = (event: WebSocketEventMap["message"]) => {
       const msg = JSON.parse(event.data);
-      console.log(`Recieved ${msg.event}`);
-
       switch (msg.event) {
         case LobbyEvent.UserJoined:
           {

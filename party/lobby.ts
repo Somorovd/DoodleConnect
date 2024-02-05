@@ -72,7 +72,6 @@ export default class LobbyServer implements Party.Server {
       case LobbyEvent.DrawLine:
         this.onDrawLine(msg.data);
     }
-    console.log(`Broadcasting: ${msg.event}`);
     this.room.broadcast(message, [sender.id]);
   }
 

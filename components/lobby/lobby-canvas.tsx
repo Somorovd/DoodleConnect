@@ -62,7 +62,6 @@ const LobbyCanvas = () => {
   };
 
   useEffect(() => {
-    console.log("canvas", canvasRef);
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     if (context) {
@@ -85,9 +84,6 @@ const LobbyCanvas = () => {
   }, [canvasRef, canvasRef.current]);
 
   useEffect(() => {
-    if (!socket) console.log("missing socket");
-    if (!context) console.log("missing context");
-
     if (!socket || !context) return;
 
     const onSync = (msg: LobbyEventMessage<LobbyEvent.Sync>) => {
@@ -99,7 +95,6 @@ const LobbyCanvas = () => {
     };
 
     const onDrawLine = (msg: LobbyEventMessage<LobbyEvent.DrawLine>) => {
-      console.log("Here -- drawing line. Context: ", context, "Message: ", msg);
       context.beginPath();
       context.strokeStyle = msg.data.color;
       context.lineWidth = msg.data.size;
@@ -115,7 +110,6 @@ const LobbyCanvas = () => {
 
     const onMessage = (event: WebSocketEventMap["message"]) => {
       const msg: LobbyEventMessage<any> = JSON.parse(event.data);
-      console.log(`Canvas Recieved ${msg.event}`);
       switch (msg.event) {
         case LobbyEvent.DrawLine:
           onDrawLine(msg);
@@ -126,7 +120,6 @@ const LobbyCanvas = () => {
       }
     };
 
-    console.log("adding event listener");
     socket.addEventListener("message", onMessage);
     return () => socket.removeEventListener("message", onMessage);
   }, [socket, context]);

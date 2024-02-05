@@ -91,8 +91,6 @@ const LobbyVideoConference = () => {
     alert("Feature Coming Soon");
   };
 
-  // console.log(userTracks);
-
   return (
     <>
       {Object.values(userTracks)
