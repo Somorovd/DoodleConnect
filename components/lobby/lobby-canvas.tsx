@@ -109,6 +109,7 @@ const LobbyCanvas = () => {
   }, [socket]);
 
   useEffect(() => {
+    console.log("canvasRef", canvasRef);
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
 
