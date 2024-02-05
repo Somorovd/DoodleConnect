@@ -36,7 +36,7 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     // livekit
-    if (!lobby || !self) return;
+    if (!lobby || !self || loading !== "success") return;
     (async () => {
       try {
         const resp = await fetch(
@@ -48,7 +48,7 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
         console.error(e);
       }
     })();
-  }, [lobby, self]);
+  }, [loading, lobby, self]);
 
   const toggleCopy = () => {
     setIcon("check");

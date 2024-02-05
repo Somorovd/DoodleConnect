@@ -10,9 +10,9 @@ export async function GET(
   const { credential } = params;
 
   try {
-    const user = await currentUser();
+    const self = await currentUser();
 
-    if (!user) {
+    if (!self) {
       return Response.json({ message: "Unauthorized" }, { status: 403 });
     }
 
@@ -27,6 +27,10 @@ export async function GET(
 
     if (!lobby) {
       return Response.json({ message: "Lobby not found" }, { status: 404 });
+    }
+
+    if (!lobby.users.find((user) => user.id === self.id)) {
+      return Response.json({ message: "Unauthorized" }, { status: 403 });
     }
 
     return Response.json(lobby, { status: 200 });
