@@ -16,6 +16,8 @@ export const useLobbySocket = () => {
   });
 
   useEffect(() => {
+    console.log(socket);
+
     if (!socket || !lobbyId || !self) return;
 
     const joinMessage: LobbyEventMessage<LobbyEvent.UserJoined> = {
@@ -33,6 +35,7 @@ export const useLobbySocket = () => {
 
     const onMessage = (event: WebSocketEventMap["message"]) => {
       const msg = JSON.parse(event.data);
+      console.log(`Recieved ${msg.event}`);
 
       switch (msg.event) {
         case LobbyEvent.UserJoined:

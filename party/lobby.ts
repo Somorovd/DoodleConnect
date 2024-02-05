@@ -1,7 +1,6 @@
 import { LobbyUser } from "@/models/user";
 import type * as Party from "partykit/server";
 import type { Position } from "@/types";
-import { SyncAction } from "next/dist/server/dev/hot-reloader-types";
 
 export enum LobbyEvent {
   UserJoined = "user-joined",
@@ -46,8 +45,9 @@ export default class LobbyServer implements Party.Server {
     }
   }
 
-  onConnect(conn: Party.Connection) {
+  async onConnect(conn: Party.Connection) {
     // send the current canvas state
+    console.log("Connected", conn.id);
     const msg: LobbyEventMessage<LobbyEvent.Sync> = {
       event: LobbyEvent.Sync,
       data: {
@@ -57,7 +57,7 @@ export default class LobbyServer implements Party.Server {
     conn.send(JSON.stringify(msg));
   }
 
-  onMessage(message: string, sender: Party.Connection) {
+  async onMessage(message: string, sender: Party.Connection) {
     const msg: LobbyEventMessage<any> = JSON.parse(message);
     switch (msg.event) {
       case LobbyEvent.UserJoined:
@@ -72,6 +72,7 @@ export default class LobbyServer implements Party.Server {
       case LobbyEvent.DrawLine:
         this.onDrawLine(msg.data);
     }
+    console.log(`Broadcasting: ${msg.event}`);
     this.room.broadcast(message, [sender.id]);
   }
 

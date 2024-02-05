@@ -3,15 +3,16 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ModalType, useModal } from "@/hooks/use-modal";
-import { UserButton, redirectToSignIn, useUser } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { Accordion } from "@/components/ui/accordion";
 import { CircleUserRound, CodeSquare, Github, Linkedin } from "lucide-react";
 import Link from "next/link";
 import TechAccordionIcon from "@/components/tech-accordion-item";
-import { redirect } from "next/navigation";
+import { useLobby } from "@/hooks/use-lobby";
 
 export default function Home() {
   const { isLoaded, user: self } = useUser();
+  const resetLobbyLoaded = useLobby((state) => state.resetLoading);
   const onOpen = useModal((state) => state.onOpen);
 
   const handleCreate = () => {
@@ -25,6 +26,8 @@ export default function Home() {
   if (!isLoaded) {
     return null;
   }
+
+  resetLobbyLoaded();
 
   return (
     <div className="flex flex-col h-full max-h-screen">

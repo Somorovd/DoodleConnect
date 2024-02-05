@@ -29,10 +29,8 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
 
     if (!self) return;
 
-    if (loading === "complete") {
-      if (!lobby?.users.find((user) => user.id === self.id)) {
-        return redirect("/");
-      }
+    if (loading === "fail") {
+      return redirect("/");
     }
   }, [loading, lobby, self]);
 
@@ -60,7 +58,7 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
   return (
     <>
       <div className="flex gap-4 justify-center py-8 text-lg">
-        {loading === "complete" ? (
+        {loading === "success" ? (
           <>
             <p>
               Share your invite code:{" "}
@@ -88,7 +86,7 @@ const LobbyPage = ({ params }: { params: { id: string } }) => {
           </p>
         )}
       </div>
-      {loading === "complete" ? (
+      {loading === "success" ? (
         <LiveKitRoom
           video={true}
           audio={true}
