@@ -100,6 +100,7 @@ const LobbyCanvas = () => {
       }
     };
 
+    console.log("adding event listener");
     socket.addEventListener("message", onMessage);
     return () => socket.removeEventListener("message", onMessage);
   }, [socket]);
