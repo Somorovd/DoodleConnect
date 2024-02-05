@@ -16,8 +16,6 @@ export const useLobbySocket = () => {
   });
 
   useEffect(() => {
-    console.log(socket);
-
     if (!socket || !lobbyId || !self) return;
 
     const joinMessage: LobbyEventMessage<LobbyEvent.UserJoined> = {

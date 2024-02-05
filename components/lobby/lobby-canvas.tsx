@@ -62,6 +62,29 @@ const LobbyCanvas = () => {
   };
 
   useEffect(() => {
+    console.log("canvas", canvasRef);
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d");
+    if (context) {
+      setContext(context);
+    }
+
+    const handleMouse = (event: MouseEvent) => {
+      if (!canvas?.contains(event.target as Node)) {
+        endDrawing();
+      }
+    };
+
+    document.addEventListener("mousedown", handleMouse);
+    document.addEventListener("mouseup", handleMouse);
+
+    return () => {
+      document.removeEventListener("mousedown", handleMouse);
+      document.removeEventListener("mouseup", handleMouse);
+    };
+  }, [canvasRef, canvasRef.current]);
+
+  useEffect(() => {
     if (!socket) console.log("missing socket");
     if (!context) console.log("missing context");
 
@@ -106,32 +129,7 @@ const LobbyCanvas = () => {
     console.log("adding event listener");
     socket.addEventListener("message", onMessage);
     return () => socket.removeEventListener("message", onMessage);
-  }, [socket]);
-
-  useEffect(() => {
-    console.log("canvasRef", canvasRef);
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-
-    if (context) {
-      context.lineCap = "round";
-      setContext(context);
-    }
-
-    const handleMouse = (event: MouseEvent) => {
-      if (!canvas?.contains(event.target as Node)) {
-        endDrawing();
-      }
-    };
-
-    document.addEventListener("mousedown", handleMouse);
-    document.addEventListener("mouseup", handleMouse);
-
-    return () => {
-      document.removeEventListener("mousedown", handleMouse);
-      document.removeEventListener("mouseup", handleMouse);
-    };
-  }, [canvasRef, canvasRef.current]);
+  }, [socket, context]);
 
   useEffect(() => {
     if (context) {
