@@ -100,9 +100,14 @@ const LobbyVideoConference = () => {
             return null;
           }
           return (
-            <ContextMenu key={`track-${i}`}>
-              <ContextMenuTrigger>
-                <div className={i % 2 == 0 ? "col-start-1" : "col-start-3"}>
+            <div
+              key={`track-${i}`}
+              className={
+                i % 2 == 0 ? "col-start-1 basis-1/2" : "col-start-3 basis-1/2"
+              }
+            >
+              <ContextMenu>
+                <ContextMenuTrigger>
                   <div className="relative">
                     {camera?.participant.isCameraEnabled ? (
                       <VideoTrack
@@ -132,24 +137,26 @@ const LobbyVideoConference = () => {
                       </div>
                     </div>
                   </div>
-                </div>
-              </ContextMenuTrigger>
-              <ContextMenuContent>
-                {isHost && trackUser.id !== self?.id && (
-                  <>
-                    <ContextMenuItem onSelect={() => kickUser(trackUser)}>
-                      Kick User
+                </ContextMenuTrigger>
+                <ContextMenuContent>
+                  {isHost && trackUser.id !== self?.id && (
+                    <>
+                      <ContextMenuItem onSelect={() => kickUser(trackUser)}>
+                        Kick User
+                      </ContextMenuItem>
+                      <ContextMenuItem onSelect={() => makeHost(trackUser)}>
+                        Make Host
+                      </ContextMenuItem>
+                    </>
+                  )}
+                  {trackUser.id === self?.id && (
+                    <ContextMenuItem onSelect={leaveLobby}>
+                      Leave Lobby
                     </ContextMenuItem>
-                    <ContextMenuItem onSelect={() => makeHost(trackUser)}>
-                      Make Host
-                    </ContextMenuItem>
-                  </>
-                )}
-                <ContextMenuItem onSelect={leaveLobby}>
-                  Leave Lobby
-                </ContextMenuItem>
-              </ContextMenuContent>
-            </ContextMenu>
+                  )}
+                </ContextMenuContent>
+              </ContextMenu>
+            </div>
           );
         })}
     </>
