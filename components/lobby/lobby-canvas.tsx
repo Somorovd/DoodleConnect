@@ -62,6 +62,9 @@ const LobbyCanvas = () => {
   };
 
   useEffect(() => {
+    if (!socket) console.log("missing socket");
+    if (!context) console.log("missing context");
+
     if (!socket || !context) return;
 
     const onSync = (msg: LobbyEventMessage<LobbyEvent.Sync>) => {
