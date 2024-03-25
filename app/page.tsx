@@ -9,11 +9,13 @@ import { CircleUserRound, CodeSquare, Github, Linkedin } from "lucide-react";
 import Link from "next/link";
 import TechAccordionIcon from "@/components/tech-accordion-item";
 import { useLobby } from "@/hooks/use-lobby";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { isLoaded, user: self } = useUser();
   const resetLobbyLoaded = useLobby((state) => state.resetLoading);
   const onOpen = useModal((state) => state.onOpen);
+  const router = useRouter();
 
   const handleCreate = () => {
     onOpen(ModalType.CreateLobby);
@@ -21,6 +23,14 @@ export default function Home() {
 
   const handleJoin = () => {
     onOpen(ModalType.JoinLobby);
+  };
+
+  const handleSignIn = () => {
+    router.push("/sign-in");
+  };
+
+  const handleSignUp = () => {
+    router.push("/sign-up");
   };
 
   if (!isLoaded) {
@@ -43,22 +53,41 @@ export default function Home() {
           <div className="sticky w-[400px] top-[50%] right-[50%] -translate-y-1/2">
             <div className="h-fit border-[1px] space-y-4 p-4 border-black flex flex-col">
               <header className="flex text-center space-x-4">
-                <UserButton afterSignOutUrl="/" />
-                <p>
-                  Signed in as{" "}
-                  <span className="font-bold">{self?.username}</span>
-                </p>
+                {self ? (
+                  <>
+                    <UserButton afterSignOutUrl="/" />
+                    <p>
+                      Signed in as{" "}
+                      <span className="font-bold">{self?.username}</span>
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p>Please sign in to create or join a lobby</p>
+                  </>
+                )}
               </header>
               <hr className="border-black" />
               <div className="flex space-x-4 basis-full grow">
-                <div className="h-full basis-0.5 grow rounded-none flex flex-col justify-between text-center">
-                  {/* <h2>Create New Lobby</h2> */}
-                  <Button onClick={handleCreate}>Create</Button>
-                </div>
-                <div className="h-full basis-0.5 grow rounded-none flex flex-col justify-between text-center">
-                  {/* <h2>Join a Lobby</h2> */}
-                  <Button onClick={handleJoin}>Join</Button>
-                </div>
+                {self ? (
+                  <>
+                    <div className="h-full basis-0.5 grow rounded-none flex flex-col justify-between text-center">
+                      <Button onClick={handleCreate}>Create</Button>
+                    </div>
+                    <div className="h-full basis-0.5 grow rounded-none flex flex-col justify-between text-center">
+                      <Button onClick={handleJoin}>Join</Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="h-full basis-0.5 grow rounded-none flex flex-col justify-between text-center">
+                      <Button onClick={handleSignIn}>Sign In</Button>
+                    </div>
+                    <div className="h-full basis-0.5 grow rounded-none flex flex-col justify-between text-center">
+                      <Button onClick={handleSignUp}>Sign Up</Button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
