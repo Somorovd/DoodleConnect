@@ -54,6 +54,7 @@ const LobbyCanvas = () => {
   const draw = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
     if (!context || !isDrawing) return;
     const { offsetX: x, offsetY: y } = nativeEvent;
+    context.moveTo(ppos.x, ppos.y);
     context.lineTo(x, y);
     context.stroke();
     sendDrawEvent(ppos, { x, y });
