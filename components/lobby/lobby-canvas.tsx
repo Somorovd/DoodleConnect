@@ -55,6 +55,8 @@ const LobbyCanvas = () => {
     if (!context || !isDrawing) return;
     const { offsetX: x, offsetY: y } = nativeEvent;
     context.moveTo(ppos.x, ppos.y);
+    context.strokeStyle = color;
+    context.lineWidth = size;
     context.lineTo(x, y);
     context.stroke();
     sendDrawEvent(ppos, { x, y });
