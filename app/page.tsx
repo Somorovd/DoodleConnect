@@ -105,6 +105,11 @@ export default function Home() {
               I recently learned, each of which has a description below and a
               link to the official documentation or about page.
             </p>
+            <p>
+              Sign-in options are with GitHub or LinkedIn. Alternatively, you
+              can sign up with any custom username and password and this will
+              not require any email, personal details, or verification.
+            </p>
             <div className="flex items-center gap-4">
               <p>Connect with me:</p>
               <div className="flex space-x-2 items-center">
